@@ -1,7 +1,7 @@
 package edu.cose.seu
 
-import SparkConfig.spark
-
+import edu.cose.seu.config.SparkConfig
+import edu.cose.seu.config.SparkConfig.spark
 import org.apache.spark.sql.DataFrame
 import org.junit.jupiter.api.Test
 

@@ -1,0 +1,132 @@
+[debug] > Exec(early(addDefaultCommands), None, None)
+[debug] > Exec(addDefaultCommands, None, None)
+[debug] > Exec(early(initialize), None, None)
+[debug] > Exec(initialize, None, None)
+[debug] > Exec(boot, None, None)
+[debug] > Exec(writeSbtVersion, None, None)
+[debug] > Exec(reload, None, None)
+[debug] > Exec(sbtStashOnFailure, None, None)
+[debug] > Exec(onFailure loadFailed, None, None)
+[debug] > Exec(loadp, None, None)
+[info] welcome to sbt 1.6.2 (Oracle Corporation Java 11.0.14)
+[debug]       Load.loadUnit: plugins took 69.2174ms
+[debug]       Load.loadUnit: defsScala took 0.1644ms
+[debug] [Loading] Scanning directory C:\Users\Li\.sbt\1.0\plugins
+[debug] [Loading] Found non-root projects 
+[debug] [Loading] Done in C:\Users\Li\.sbt\1.0\plugins, returning: ()
+[debug] deducing auto plugins based on known facts Set(Atom(sbt.plugins.CorePlugin)) and clauses Clauses(Clause(Atom(sbt.plugins.JvmPlugin),Set(Atom(sbt.plugins.IvyPlugin)))
+[debug] Clause(Atom(sbt.ScriptedPlugin),Set(Atom(sbt.plugins.JvmPlugin)))
+[debug] Clause(Atom(sbt.plugins.SbtPlugin),Set(Atom(sbt.ScriptedPlugin)))
+[debug] Clause(Atom(sbt.plugins.SemanticdbPlugin),Set(Atom(sbt.plugins.JvmPlugin)))
+[debug] Clause(Atom(sbt.plugins.JUnitXmlReportPlugin),Set(Atom(sbt.plugins.JvmPlugin)))
+[debug] Clause(Atom(sbt.plugins.MiniDependencyTreePlugin),Set(Atom(sbt.plugins.JvmPlugin)))
+[debug] Clause(Atom(sbt.plugins.CorePlugin),Set(Atom(sbt.plugins.IvyPlugin)))
+[debug] Clause(Atom(sbt.plugins.IvyPlugin),Set(Atom(sbt.plugins.JvmPlugin)))
+[debug] Clause(Atom(sbt.plugins.JvmPlugin),Set(Atom(sbt.plugins.SemanticdbPlugin)))
+[debug] Clause(Atom(sbt.plugins.JvmPlugin),Set(Atom(sbt.plugins.JUnitXmlReportPlugin)))
+[debug] Clause(Atom(sbt.plugins.CorePlugin),Set(Atom(sbt.plugins.Giter8TemplatePlugin)))
+[debug] Clause(Atom(sbt.plugins.JvmPlugin),Set(Atom(sbt.plugins.MiniDependencyTreePlugin))))
+[debug]   :: deduced result: Matched(sbt.plugins.CorePlugin,sbt.plugins.Giter8TemplatePlugin,sbt.plugins.IvyPlugin,sbt.plugins.JvmPlugin,sbt.plugins.MiniDependencyTreePlugin,sbt.plugins.JUnitXmlReportPlugin,sbt.plugins.SemanticdbPlugin)
+[debug] Plugins.deducer#function took 11.935 ms
+[debug]           Load.resolveProject(global-plugins) took 32.364ms
+[debug]         Load.loadTransitive: finalizeProject(Project(id global-plugins, base: C:\Users\Li\.sbt\1.0\plugins, plugins: List(<none>))) took 62.5711ms
+[debug] [Loading] Done in C:\Users\Li\.sbt\1.0\plugins, returning: (global-plugins)
+[debug]       Load.loadUnit: loadedProjectsRaw took 78.4703ms
+[debug]       Load.loadUnit: cleanEvalClasses took 0.1409ms
+[debug]     Load.loadUnit(file:/C:/Users/Li/.sbt/1.0/plugins/, ...) took 154.0103ms
+[debug]   Load.apply: load took 268.5974ms
+[debug]   Load.apply: resolveProjects took 3.8951ms
+[debug]   Load.apply: finalTransforms took 34.7614ms
+[debug]   Load.apply: config.delegates took 4.6006ms
+[debug]   Load.apply: Def.make(settings)... took 236.0664ms
+[debug]   Load.apply: structureIndex took 61.357ms
+[debug]   Load.apply: mkStreams took 1.2535ms
+[info] loading global plugins from C:\Users\Li\.sbt\1.0\plugins
+[debug] Running task... Cancel: Signal, check cycles: false, forcegc: true
+[debug] Load.defaultLoad until apply took 1625.6226ms
+[debug]           Load.loadUnit: plugins took 28.4617ms
+[debug]           Load.loadUnit: defsScala took 0.0022ms
+[debug] [Loading] Scanning directory F:\Java\network-fault-bigdata\project
+[debug]             Load.loadUnit: mkEval took 4.3873ms
+[debug] [Loading] Found non-root projects 
+[debug] [Loading] Done in F:\Java\network-fault-bigdata\project, returning: ()
+[debug] deducing auto plugins based on known facts Set(Atom(sbt.plugins.CorePlugin)) and clauses Clauses(Clause(Atom(sbt.plugins.JvmPlugin),Set(Atom(sbt.plugins.IvyPlugin)))
+[debug] Clause(Atom(sbt.ScriptedPlugin),Set(Atom(sbt.plugins.JvmPlugin)))
+[debug] Clause(Atom(sbt.plugins.SbtPlugin),Set(Atom(sbt.ScriptedPlugin)))
+[debug] Clause(Atom(sbt.plugins.SemanticdbPlugin),Set(Atom(sbt.plugins.JvmPlugin)))
+[debug] Clause(Atom(sbt.plugins.JUnitXmlReportPlugin),Set(Atom(sbt.plugins.JvmPlugin)))
+[debug] Clause(Atom(sbt.plugins.MiniDependencyTreePlugin),Set(Atom(sbt.plugins.JvmPlugin)))
+[debug] Clause(Atom(sbt.plugins.CorePlugin),Set(Atom(sbt.plugins.IvyPlugin)))
+[debug] Clause(Atom(sbt.plugins.IvyPlugin),Set(Atom(sbt.plugins.JvmPlugin)))
+[debug] Clause(Atom(sbt.plugins.JvmPlugin),Set(Atom(sbt.plugins.SemanticdbPlugin)))
+[debug] Clause(Atom(sbt.plugins.JvmPlugin),Set(Atom(sbt.plugins.JUnitXmlReportPlugin)))
+[debug] Clause(Atom(sbt.plugins.CorePlugin),Set(Atom(sbt.plugins.Giter8TemplatePlugin)))
+[debug] Clause(Atom(sbt.plugins.JvmPlugin),Set(Atom(sbt.plugins.MiniDependencyTreePlugin))))
+[debug]   :: deduced result: Matched(sbt.plugins.CorePlugin,sbt.plugins.Giter8TemplatePlugin,sbt.plugins.IvyPlugin,sbt.plugins.JvmPlugin,sbt.plugins.MiniDependencyTreePlugin,sbt.plugins.JUnitXmlReportPlugin,sbt.plugins.SemanticdbPlugin)
+[debug] Plugins.deducer#function took 1.3774 ms
+[info] loading settings for project network-fault-bigdata-build from plugins.sbt ...
+[debug]               Load.resolveProject(network-fault-bigdata-build) took 1.4261ms
+[debug]             Load.loadTransitive: finalizeProject(Project(id network-fault-bigdata-build, base: F:\Java\network-fault-bigdata\project, plugins: List(<none>))) took 3.0985ms
+[debug] [Loading] Done in F:\Java\network-fault-bigdata\project, returning: (network-fault-bigdata-build)
+[debug]           Load.loadUnit: loadedProjectsRaw took 84.5508ms
+[debug]           Load.loadUnit: cleanEvalClasses took 2.2612ms
+[debug]         Load.loadUnit(file:/F:/Java/network-fault-bigdata/project/, ...) took 115.8473ms
+[debug]       Load.apply: load took 116.5344ms
+[debug]       Load.apply: resolveProjects took 0.1277ms
+[debug]       Load.apply: finalTransforms took 6.1045ms
+[debug]       Load.apply: config.delegates took 0.2278ms
+[debug]       Load.apply: Def.make(settings)... took 54.3896ms
+[debug]       Load.apply: structureIndex took 18.5677ms
+[debug]       Load.apply: mkStreams took 0.0018ms
+[info] loading project definition from F:\Java\network-fault-bigdata\project
+[debug] Running task... Cancel: Signal, check cycles: false, forcegc: true
+[debug]     Load.loadUnit: plugins took 362.9284ms
+[debug]     Load.loadUnit: defsScala took 0.0024ms
+[debug] [Loading] Scanning directory F:\Java\network-fault-bigdata
+[debug]       Load.loadUnit: mkEval took 0.2159ms
+[debug] [Loading] Found root project root w/ remaining 
+[debug] deducing auto plugins based on known facts Set(Atom(sbt.plugins.CorePlugin)) and clauses Clauses(Clause(Atom(sbt.plugins.JvmPlugin),Set(Atom(sbt.plugins.IvyPlugin)))
+[debug] Clause(Atom(sbt.ScriptedPlugin),Set(Atom(sbt.plugins.JvmPlugin)))
+[debug] Clause(Atom(sbt.plugins.SbtPlugin),Set(Atom(sbt.ScriptedPlugin)))
+[debug] Clause(Atom(sbt.plugins.SemanticdbPlugin),Set(Atom(sbt.plugins.JvmPlugin)))
+[debug] Clause(Atom(sbt.plugins.JUnitXmlReportPlugin),Set(Atom(sbt.plugins.JvmPlugin)))
+[debug] Clause(Atom(sbt.plugins.MiniDependencyTreePlugin),Set(Atom(sbt.plugins.JvmPlugin)))
+[debug] Clause(Atom(sbtide.ConfigPlugin),Set(Atom(sbt.plugins.JvmPlugin)))
+[debug] Clause(Atom(sbt.plugins.CorePlugin),Set(Atom(sbt.plugins.IvyPlugin)))
+[debug] Clause(Atom(sbt.plugins.IvyPlugin),Set(Atom(sbt.plugins.JvmPlugin)))
+[debug] Clause(Atom(sbt.plugins.JvmPlugin),Set(Atom(sbt.plugins.SemanticdbPlugin)))
+[debug] Clause(Atom(sbt.plugins.JvmPlugin),Set(Atom(sbt.plugins.JUnitXmlReportPlugin)))
+[debug] Clause(Atom(sbt.plugins.CorePlugin),Set(Atom(sbt.plugins.Giter8TemplatePlugin)))
+[debug] Clause(Atom(sbt.plugins.JvmPlugin),Set(Atom(sbt.plugins.MiniDependencyTreePlugin))))
+[debug]   :: deduced result: Matched(sbt.plugins.CorePlugin,sbt.plugins.Giter8TemplatePlugin,sbt.plugins.IvyPlugin,sbt.plugins.JvmPlugin,sbt.plugins.MiniDependencyTreePlugin,sbt.plugins.JUnitXmlReportPlugin,sbt.plugins.SemanticdbPlugin)
+[debug] Plugins.deducer#function took 1.8215 ms
+[info] loading settings for project root from build.sbt ...
+[debug]         Load.resolveProject(root) took 0.9573ms
+[debug]       Load.loadTransitive: finalizeProject(Project(id root, base: F:\Java\network-fault-bigdata, plugins: List(<none>))) took 3.704ms
+[debug] [Loading] Done in F:\Java\network-fault-bigdata, returning: (root)
+[debug]     Load.loadUnit: loadedProjectsRaw took 160.2677ms
+[debug]     Load.loadUnit: cleanEvalClasses took 4.9761ms
+[debug]   Load.loadUnit(file:/F:/Java/network-fault-bigdata/, ...) took 528.7867ms
+[debug] Load.apply: load took 530.2638ms
+[debug] Load.apply: resolveProjects took 0.1351ms
+[debug] Load.apply: finalTransforms took 7.9786ms
+[debug] Load.apply: config.delegates took 0.3755ms
+[debug] Load.apply: Def.make(settings)... took 39.3592ms
+[debug] Load.apply: structureIndex took 15.139ms
+[debug] Load.apply: mkStreams took 0.0017ms
+[info] set current project to network-fault-bigdata (in build file:/F:/Java/network-fault-bigdata/)
+[warn] there's a key that's not used by any other settings/tasks:
+[warn]  
+[warn] * root / idePackagePrefix
+[warn]   +- F:\Java\network-fault-bigdata\build.sbt:8
+[warn]  
+[warn] note: a setting might still be used by a command; to exclude a key from this `lintUnused` check
+[warn] either append it to `Global / excludeLintKeys` or call .withRank(KeyRanks.Invisible) on the key
+[debug] > Exec(sbtPopOnFailure, None, None)
+[debug] > Exec(resumeFromFailure, None, None)
+[debug] > Exec(notifyUsersAboutShell, None, None)
+[debug] > Exec(iflast shell, None, None)
+[debug] > Exec(shell, None, None)
+[info] sbt server started at local:sbt-server-aff5146333ed4abaede4
+[debug] Writing bsp connection file
+[info] started sbt server

@@ -1,12 +1,14 @@
 package edu.cose.seu
+package function
 
-import edu.cose.seu.config.SparkConfig
+import config.SparkConfig
+
 import org.apache.spark.sql.{DataFrame, Row}
 
 import scala.collection.mutable
-import scala.collection.mutable.Set
 
 object Statistics {
+
   /**
    * 从数据库获取故障信息
    */

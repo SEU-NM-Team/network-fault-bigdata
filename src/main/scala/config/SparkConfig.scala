@@ -29,21 +29,4 @@ object SparkConfig {
     .master(field("spark.master"))
     .getOrCreate()
 
-  /**
-   * 读取字符串中的表
-   *
-   * @param table :String
-   * @return dataframe of table
-   */
-
-  def getTable(table: String): DataFrame = {
-    return spark.read.format("jdbc")
-      .option("driver", field("jdbc.driver"))
-      .option("url", field("jdbc.url"))
-      .option("dbtable", table)
-      .option("user", field("jdbc.username"))
-      .option("password", field("jdbc.password"))
-      .load()
-  }
-
 }

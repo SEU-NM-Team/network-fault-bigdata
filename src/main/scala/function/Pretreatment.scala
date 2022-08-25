@@ -75,7 +75,22 @@ object Pretreatment {
    * @return faultDF:DataFrame 故障数据
    */
   def dataProcess(cleanDF: DataFrame): DataFrame = {
-    val schema = StructType(Array(
+
+    val seqSchema = StructType(Array(
+      StructField("fault_type", StringType, nullable = true),
+      StructField("acs_way", StringType, nullable = true),
+      StructField("fault_1", StringType, nullable = true),
+      StructField("fault_2", StringType, nullable = true),
+      StructField("province", StringType, nullable = true),
+      StructField("city", StringType, nullable = true),
+      StructField("county", StringType, nullable = true),
+      StructField("town", StringType, nullable = true),
+      StructField("detail", StringType, nullable = true),
+      StructField("num", IntegerType, nullable = true),
+      StructField("insert_time", TimestampType, nullable = true)
+    ))
+
+    val JDBCSchema = StructType(Array(
       StructField("fault_id", IntegerType, nullable = true),
       StructField("fault_type", StringType, nullable = true),
       StructField("acs_way", StringType, nullable = true),
@@ -90,7 +105,17 @@ object Pretreatment {
       StructField("insert_time", TimestampType, nullable = true)
     ))
 
-    cleanDF.foreach(
+    /**
+     * 类型转换,便于遍历
+     */
+    val cleanArray = cleanDF.collect()
+
+    println("cleanArray:" + cleanArray.length)
+
+    /**
+     * 将cleanDF的地址进行分解，并装入Seq
+     */
+    cleanArray.foreach(
       elem => {
         val addressList = addressSegmentation(elem(7).toString)
         val row = Row(
@@ -108,7 +133,38 @@ object Pretreatment {
         seq = seq :+ row
       })
 
-    val rowList = seq.zip(Stream from 1).map(x => {
+    println("seq:" + seq.size)
+
+    /**
+     * Seq转DF，便于后续操作
+     */
+    var seqDF = spark.createDataFrame(spark.sparkContext.parallelize(seq), seqSchema)
+
+    /**
+     * 缺失值处理
+     */
+    seqDF = seqDF.na.fill(Map(
+      "county" -> "未知县区",
+      "town" -> "未知乡镇",
+      "detail" -> "未知地址"
+    ))
+
+    /**
+     * 异常值处理
+     */
+    seqDF = seqDF
+      .filter(col("county").rlike(SparkConfig.field("dict.filter")))
+
+
+    /**
+     * Seq转List
+     */
+    val tempSeq = seqDF.collect().toList
+
+    /**
+     * 创建rowList,添加序号
+     */
+    val rowList = tempSeq.zip(Stream from 1).map(x => {
       Row(
         x._2,
         x._1.get(0),
@@ -125,22 +181,12 @@ object Pretreatment {
       )
     })
 
-    var myDF = spark.createDataFrame(spark.sparkContext.parallelize(rowList), schema)
+    println("rowList:" + rowList.size)
 
     /**
-     * 缺失值处理
+     * rowList转DF，完成数据处理
      */
-    myDF = myDF.na.fill(Map(
-      "county" -> "未知县区",
-      "town" -> "未知乡镇",
-      "detail" -> "未知地址"
-    ))
-
-    /**
-     * 异常值处理
-     */
-    //    myDF=myDF
-    //      .filter(col("county").rlike(SparkConfig.field("dict.filter")))
+    val myDF = spark.createDataFrame(spark.sparkContext.parallelize(rowList), JDBCSchema)
 
     return myDF
   }
@@ -155,14 +201,17 @@ object Pretreatment {
     val cleanDF = dataClean(sourceDF)
     val faultDF = dataProcess(cleanDF)
     //    JDBCUtil.writeTable(faultDF, "fault_data", "append")
-    //    CSVUtil.write(faultDF, "fault_data")
+    CSVUtil.write(faultDF, "fault_data")
     return faultDF
   }
 
 
   def main(args: Array[String]): Unit = {
     val faultDF = pretreatment()
-    faultDF.count()
+    println("faultDF:" + faultDF.count())
+    //    val faultDF1 = faultDF.filter(col("county").rlike(SparkConfig.field("dict.filter")))
+    //    println(faultDF1.count())
+    //    println(sourceDF.count())
   }
 
 }

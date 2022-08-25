@@ -6,14 +6,15 @@ import util.{CSVUtil, JDBCUtil}
 import edu.cose.seu.config.SparkConfig
 import edu.cose.seu.config.SparkConfig.spark
 import edu.cose.seu.util.AddressSegmentationUtil.addressSegmentation
+import edu.cose.seu.util.CSVUtil.sourceSchema
 import edu.cose.seu.util.TimeUtil.getTime
 import org.apache.spark.sql.{DataFrame, Row}
-import org.apache.spark.sql.functions.{col, monotonically_increasing_id}
+import org.apache.spark.sql.functions.col
 import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType, TimestampType}
 
 object Pretreatment {
 
-  val sourceDF: DataFrame = CSVUtil.read(SparkConfig.field("file.path"))
+  val sourceDF: DataFrame = CSVUtil.read(sourceSchema,SparkConfig.field("file.path"))
 
   /**
    * 数据清洗

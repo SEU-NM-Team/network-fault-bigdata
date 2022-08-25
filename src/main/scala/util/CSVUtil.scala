@@ -8,7 +8,7 @@ import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructT
 
 object CSVUtil {
 
-  val schema: StructType = StructType(Array(
+  val sourceSchema: StructType = StructType(Array(
     StructField("id", IntegerType, nullable = true),
     StructField("fault_type", StringType, nullable = true),
     StructField("acs_way", StringType, nullable = true),
@@ -20,7 +20,7 @@ object CSVUtil {
     StructField("num", IntegerType, nullable = true)
   ))
 
-  def read(path: String): DataFrame = {
+  def read(schema:StructType,path: String): DataFrame = {
     return SparkConfig.spark.read
       .option("header", "true")
       .schema(schema)

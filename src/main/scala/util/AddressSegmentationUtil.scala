@@ -23,7 +23,7 @@ object AddressSegmentationUtil {
       else if (result.group(2).length < 5)
         result.group(2)
       else
-        result.group(2).substring(result.group(2).length - 3, result.group(2).length),
+        result.group(2).substring(2, result.group(2).length),
       result.group(4),
       result.group(6)
     )

@@ -1,6 +1,8 @@
 package edu.cose.seu
 package util
 
+import edu.cose.seu.config.SparkConfig
+
 import scala.util.matching.Regex
 
 object AddressSegmentationUtil {
@@ -12,10 +14,19 @@ object AddressSegmentationUtil {
    * @return addressList :List[String]
    */
   def addressSegmentation(address: String): List[String] = {
-    val pattern: Regex = new Regex("(.{0,4}(县|区|市))?(.*?(乡|镇|街道办|街道|办事处|地区))?(.+)")
+    val pattern: Regex = new Regex(SparkConfig.field("dict.address"))
     val result = pattern.findAllIn(address)
 
-    return List(result.group(1), result.group(3), result.group(5))
+    return List(
+      if (result.group(2) == null)
+        null
+      else if (result.group(2).length != 5)
+        result.group(2)
+      else
+        result.group(2).substring(2, 5),
+      result.group(4),
+      result.group(6)
+    )
   }
 
 

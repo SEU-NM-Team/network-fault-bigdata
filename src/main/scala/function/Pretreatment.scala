@@ -72,7 +72,7 @@ object Pretreatment {
    * <p>2.缺失值处理</p>
    * <p>3.排序</p>
    *
-   * @return
+   * @return faultDF:DataFrame 故障数据
    */
   def dataProcess(cleanDF: DataFrame): DataFrame = {
     val schema = StructType(Array(
@@ -92,6 +92,7 @@ object Pretreatment {
 
     cleanDF.foreach(
       elem => {
+        val addressList = addressSegmentation(elem(7).toString)
         val row = Row(
           elem(1),
           elem(2),
@@ -99,9 +100,9 @@ object Pretreatment {
           elem(4),
           elem(5),
           elem(6),
-          addressSegmentation(elem(7).toString).head,
-          addressSegmentation(elem(7).toString)(1),
-          addressSegmentation(elem(7).toString)(2),
+          addressList.head,
+          addressList(1),
+          addressList(2),
           elem(8),
           getTime)
         seq = seq :+ row
@@ -136,9 +137,11 @@ object Pretreatment {
     ))
 
     /**
-     * 排序
+     * 异常值处理
      */
-    myDF = myDF.orderBy("fault_id")
+    //    myDF=myDF
+    //      .filter(col("county").rlike(SparkConfig.field("dict.filter")))
+
     return myDF
   }
 
@@ -151,16 +154,15 @@ object Pretreatment {
   def pretreatment(): DataFrame = {
     val cleanDF = dataClean(sourceDF)
     val faultDF = dataProcess(cleanDF)
-    JDBCUtil.writeTable(faultDF, "fault_data", "overwrite")
-    CSVUtil.write(faultDF, "fault_data")
+    //    JDBCUtil.writeTable(faultDF, "fault_data", "append")
+    //    CSVUtil.write(faultDF, "fault_data")
     return faultDF
   }
 
 
   def main(args: Array[String]): Unit = {
     val faultDF = pretreatment()
-    faultDF.filter("length(county)>3").groupBy("county").count().show(10000)
-
+    faultDF.count()
   }
 
 }

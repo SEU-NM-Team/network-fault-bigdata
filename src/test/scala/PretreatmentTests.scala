@@ -42,4 +42,10 @@ class PretreatmentTests {
 
     println(tempRDD)
   }
+
+  @Test
+  def stringTest(): Unit = {
+    println("深圳罗湖区".length)
+    println("深圳罗湖区".substring(2, 5))
+  }
 }

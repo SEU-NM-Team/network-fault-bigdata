@@ -14,7 +14,7 @@ import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructT
 
 object Pretreatment {
 
-  val sourceDF: DataFrame = CSVUtil.read(sourceSchema,SparkConfig.field("file.path"))
+  val sourceDF: DataFrame = CSVUtil.read(sourceSchema, SparkConfig.field("file.path"))
 
   /**
    * 数据清洗
@@ -91,7 +91,7 @@ object Pretreatment {
       StructField("insert_time", TimestampType, nullable = true)
     ))
 
-    val JDBCSchema = StructType(Array(
+    val faultDataSchema = StructType(Array(
       StructField("fault_id", IntegerType, nullable = true),
       StructField("fault_type", StringType, nullable = true),
       StructField("acs_way", StringType, nullable = true),
@@ -106,17 +106,17 @@ object Pretreatment {
       StructField("insert_time", TimestampType, nullable = true)
     ))
 
-    /**
-     * 类型转换,便于遍历
-     */
-    val cleanArray = cleanDF.collect()
+    //    /**
+    //     * 类型转换,便于遍历
+    //     */
+    //    val cleanArray = cleanDF.limit(200000).collect()
 
-    println("cleanArray:" + cleanArray.length)
+    println("cleanDF:" + cleanDF.count())
 
     /**
      * 将cleanDF的地址进行分解，并装入Seq
      */
-    cleanArray.foreach(
+    cleanDF.limit(100000).take(cleanDF.count().toInt).foreach(
       elem => {
         val addressList = addressSegmentation(elem(7).toString)
         val row = Row(
@@ -187,7 +187,7 @@ object Pretreatment {
     /**
      * rowList转DF，完成数据处理
      */
-    val myDF = spark.createDataFrame(spark.sparkContext.parallelize(rowList), JDBCSchema)
+    val myDF = spark.createDataFrame(spark.sparkContext.parallelize(rowList), faultDataSchema)
 
     return myDF
   }
@@ -201,8 +201,8 @@ object Pretreatment {
   def pretreatment(): DataFrame = {
     val cleanDF = dataClean(sourceDF)
     val faultDF = dataProcess(cleanDF)
-    //    JDBCUtil.writeTable(faultDF, "fault_data", "append")
-    CSVUtil.write(faultDF, "fault_data")
+    JDBCUtil.writeTable(faultDF, "fault_data", "append")
+    CSVUtil.write(faultDF, "fault_data_1")
     return faultDF
   }
 

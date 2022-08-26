@@ -3,9 +3,11 @@ package function
 
 
 import edu.cose.seu.config.SparkConfig
+import edu.cose.seu.config.SparkConfig.spark
+import edu.cose.seu.util.TimeUtil.getTime
 import edu.cose.seu.util.{CSVUtil, JDBCUtil}
 import org.apache.spark.sql.functions.col
-import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType, TimestampType}
+import org.apache.spark.sql.types.{IntegerType, LongType, StringType, StructField, StructType, TimestampType}
 import org.apache.spark.sql.{DataFrame, Row}
 
 
@@ -29,17 +31,43 @@ object Statistics {
   /**
    * 从数据库获取故障信息
    */
-  val fault_data: DataFrame = CSVUtil.read(schema, "F:\\Java\\network-fault-bigdata\\fault_data\\fault_data.csv")
+  val fault_data: DataFrame = JDBCUtil.getTable("fault_data")
+
+  def statistics(): DataFrame = {
+    /**
+     * 计算某一县区，发生某种故障的地点总数
+     */
+    val faultTownDF = fault_data
+      .groupBy("province", "city", "county", "fault_1", "fault_2")
+      .count()
+    //      .withColumnRenamed("count", "fault_town_num")
+
+    /**
+     * 计算某一县区，某种故障发生重障的地点总数
+     */
+    val againTownDF = fault_data
+      .filter("num > 1")
+      .withColumn("num", col("num") - 1)
+      .groupBy("province", "city", "county", "fault_1", "fault_2")
+      .count()
+    //      .withColumnRenamed("count", "again_town_num")
+
+    /**
+     * 合并
+     */
+    val countDF = faultTownDF.join(againTownDF, Seq("province", "city", "county", "fault_1", "fault_2"), "left")
+
+    //    println("countDF:" + countDF.count())
 
 
-  def main(args: Array[String]): Unit = {
     /**
      * 故障数=某县区同类型故障的总和
      */
     val faultDF = fault_data
       .groupBy("province", "city", "county", "fault_1", "fault_2")
       .sum("num")
-      .as("fault_num")
+    //      .withColumnRenamed("sum(num)", "fault_num")
+
 
     /**
      * 重障：某街道故障数>=2即发生了重障
@@ -51,11 +79,72 @@ object Statistics {
       .groupBy("province", "city", "county", "fault_1", "fault_2")
       .sum("num")
       .as("again_num")
+    //      .withColumnRenamed("sum(num)", "again_num")
 
-    faultDF.join(againDF, Seq("province", "city", "county", "fault_1", "fault_2"), "left").show()
 
-    //    faultDF.printSchema()
+    /**
+     * 合并
+     */
+    val sumDF = faultDF.join(againDF, Seq("province", "city", "county", "fault_1", "fault_2"), "left")
 
-    //    againDF.printSchema()
+    //    println("sumDF:" + sumDF.count())
+
+    /**
+     * 合并
+     */
+    var totalDF = countDF.join(sumDF, Seq("province", "city", "county", "fault_1", "fault_2"))
+
+    //    println("totalDF:" + totalDF.count())
+
+    /**
+     * 缺失值处理
+     */
+    totalDF = totalDF.na.fill(0)
+
+    val tempSeq = totalDF.collect().toList
+
+    /**
+     * 标号
+     */
+    val rowList = tempSeq.zip(Stream from 1).map(x => {
+      Row(
+        x._2,
+        x._1.get(0),
+        x._1.get(1),
+        x._1.get(2),
+        x._1.get(3),
+        x._1.get(4),
+        x._1.get(5),
+        x._1.get(6),
+        x._1.get(7),
+        x._1.get(8),
+        getTime
+      )
+    })
+
+    val statisticsSchema = StructType(Array(
+      StructField("statistics_id", IntegerType, nullable = true),
+      StructField("province", StringType, nullable = true),
+      StructField("city", StringType, nullable = true),
+      StructField("county", StringType, nullable = true),
+      StructField("fault_1", StringType, nullable = true),
+      StructField("fault_2", StringType, nullable = true),
+      StructField("fault_address_num", LongType, nullable = true),
+      StructField("again_address_num", LongType, nullable = true),
+      StructField("fault_num", LongType, nullable = true),
+      StructField("again_num", LongType, nullable = true),
+      StructField("insert_time", TimestampType, nullable = true)
+    ))
+
+
+    val statisticsDF = spark.createDataFrame(spark.sparkContext.parallelize(rowList), statisticsSchema)
+
+    return statisticsDF
+  }
+
+
+  def main(args: Array[String]): Unit = {
+    val myDF = statistics()
+    JDBCUtil.writeTable(myDF, "statistics", "append")
   }
 }

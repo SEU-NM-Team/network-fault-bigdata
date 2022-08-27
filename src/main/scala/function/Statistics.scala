@@ -106,7 +106,8 @@ object Statistics {
     /**
      * 标号
      */
-    val rowList = tempSeq.zip(Stream from 1).map(x => {
+    val statistics_id = SparkConfig.field("data.statistic_id").toInt
+    val rowList = tempSeq.zip(Stream from statistics_id).map(x => {
       Row(
         x._2,
         x._1.get(0),

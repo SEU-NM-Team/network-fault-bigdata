@@ -116,7 +116,7 @@ object Pretreatment {
     /**
      * 将cleanDF的地址进行分解，并装入Seq
      */
-    cleanDF.limit(100000).take(cleanDF.count().toInt).foreach(
+    cleanDF.take(cleanDF.count().toInt).foreach(
       elem => {
         val addressList = addressSegmentation(elem(7).toString)
         val row = Row(
@@ -154,7 +154,8 @@ object Pretreatment {
      * 异常值处理
      */
     seqDF = seqDF
-      .filter(col("county").rlike(SparkConfig.field("dict.filter")))
+      .filter(col("county").rlike(SparkConfig.field("dict.countyFilter")))
+      .filter(col("town").rlike(SparkConfig.field("dict.townFilter")))
 
 
     /**
@@ -165,7 +166,8 @@ object Pretreatment {
     /**
      * 创建rowList,添加序号
      */
-    val rowList = tempSeq.zip(Stream from 1).map(x => {
+    val fault_id = SparkConfig.field("data.fault_id").toInt
+    val rowList = tempSeq.zip(Stream from fault_id).map(x => {
       Row(
         x._2,
         x._1.get(0),
@@ -201,8 +203,8 @@ object Pretreatment {
   def pretreatment(): DataFrame = {
     val cleanDF = dataClean(sourceDF)
     val faultDF = dataProcess(cleanDF)
-    JDBCUtil.writeTable(faultDF, "fault_data", "append")
-    CSVUtil.write(faultDF, "fault_data_1")
+    JDBCUtil.writeTable(faultDF, "fault_data_copy", "append")
+    //    CSVUtil.write(faultDF, "fault_data_1")
     return faultDF
   }
 

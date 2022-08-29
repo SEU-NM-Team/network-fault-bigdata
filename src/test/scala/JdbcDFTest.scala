@@ -9,6 +9,12 @@ import org.junit.jupiter.api.Test
 class JdbcDFTest {
 
   @Test
+  def field(): Unit = {
+    println(SparkConfig.field("spark.appName"))
+  }
+
+
+  @Test
   def jdbcDF(): Unit = {
     spark.read.format("jdbc")
       .option("driver", SparkConfig.field("jdbc.driver"))

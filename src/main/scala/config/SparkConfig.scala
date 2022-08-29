@@ -9,7 +9,7 @@ object SparkConfig {
   /**
    * 读取配置文件
    */
-  val config: Config = ConfigFactory.load("application.conf")
+  val config: Config = ConfigFactory.load("application.json")
 
   /**
    * 获取配置文件中的字段

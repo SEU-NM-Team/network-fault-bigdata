@@ -6,16 +6,18 @@ import org.apache.spark.sql.DataFrame
 
 object JDBCUtil {
 
+  val default_url: String = SparkConfig.field("jdbc.url");
+
   /**
    * 读取数据库中的表
    *
    * @param table :String 表名
    * @return dataframe of table
    */
-  def getTable(table: String): DataFrame = {
+  def getTable(table: String, url: String = default_url): DataFrame = {
     return SparkConfig.spark.read.format("jdbc")
       .option("driver", SparkConfig.field("jdbc.driver"))
-      .option("url", SparkConfig.field("jdbc.url"))
+      .option("url", url)
       .option("dbtable", table)
       .option("user", SparkConfig.field("jdbc.username"))
       .option("password", SparkConfig.field("jdbc.password"))
@@ -30,10 +32,10 @@ object JDBCUtil {
    * @param mode  :String 写入模式——"error","append","overwrite",	"ignore"
    *
    */
-  def writeTable(myDF: DataFrame, table: String, mode: String = "append"): Unit = {
+  def writeTable(myDF: DataFrame, table: String, mode: String = "append", url: String = default_url): Unit = {
     myDF.write.format("jdbc")
       .option("driver", SparkConfig.field("jdbc.driver"))
-      .option("url", SparkConfig.field("jdbc.url"))
+      .option("url", url)
       .option("dbtable", table)
       .option("user", SparkConfig.field("jdbc.username"))
       .option("password", SparkConfig.field("jdbc.password"))

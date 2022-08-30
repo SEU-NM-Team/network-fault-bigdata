@@ -27,7 +27,7 @@ object SparkConfig {
   val spark: SparkSession = SparkSession.builder()
     .appName(field("spark.appName"))
     .master(field("spark.master"))
-    .config("spark.driver.maxResultSize", "0")
+//    .config("spark.driver.maxResultSize", "0")
     .getOrCreate()
 
 }

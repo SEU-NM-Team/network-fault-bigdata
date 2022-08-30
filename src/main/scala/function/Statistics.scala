@@ -106,8 +106,8 @@ object Statistics {
     /**
      * 标号
      */
-    val statistics_id = SparkConfig.field("data.statistic_id").toInt
-    val rowList = tempSeq.zip(Stream from statistics_id).map(x => {
+    val statistics_id = JDBCUtil.getTable("statistics").count() + 1
+    val rowList = tempSeq.zip(Stream from statistics_id.toInt).map(x => {
       Row(
         x._2,
         x._1.get(0),

@@ -166,8 +166,8 @@ object Pretreatment {
     /**
      * 创建rowList,添加序号
      */
-    val fault_id = SparkConfig.field("data.fault_id").toInt
-    val rowList = tempSeq.zip(Stream from fault_id).map(x => {
+    val fault_id = JDBCUtil.getTable("fault_data").count() + 1
+    val rowList = tempSeq.zip(Stream from fault_id.toInt).map(x => {
       Row(
         x._2,
         x._1.get(0),

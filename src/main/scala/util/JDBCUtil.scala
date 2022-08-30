@@ -39,6 +39,7 @@ object JDBCUtil {
       .option("dbtable", table)
       .option("user", SparkConfig.field("jdbc.username"))
       .option("password", SparkConfig.field("jdbc.password"))
+      .option("truncate", value = true)
       .mode(mode)
       .save()
   }

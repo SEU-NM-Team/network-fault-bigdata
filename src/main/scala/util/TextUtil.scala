@@ -14,7 +14,7 @@ object TextUtil {
   def readtxt(path: String, lineSep: String): DataFrame = {
     return spark.read
       .option("lineSep", lineSep)
-      .csv(path)
+      .text(path)
   }
 
   def writetxt(df: DataFrame, path: String): Unit = {

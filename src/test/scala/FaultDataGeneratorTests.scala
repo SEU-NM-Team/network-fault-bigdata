@@ -1,7 +1,7 @@
 package edu.cose.seu
 
-import edu.cose.seu.function.Pretreatment
-import edu.cose.seu.function.Pretreatment.dataClean
+import edu.cose.seu.function.FaultDataGenerator
+import edu.cose.seu.function.FaultDataGenerator.dataClean
 import edu.cose.seu.util.AddressSegmentationUtil.addressSegmentation
 import edu.cose.seu.util.JDBCUtil
 import edu.cose.seu.util.TimeUtil.getTime
@@ -10,13 +10,13 @@ import org.junit.jupiter.api.Test
 
 import scala.collection.mutable.ListBuffer
 
-class PretreatmentTests {
+class FaultDataGeneratorTests {
 
   var seq = List.empty[Row]
 
   @Test
   def dataProcess(): Unit = {
-    val cleanDF = dataClean(Pretreatment.sourceDF)
+    val cleanDF = dataClean(FaultDataGenerator.sourceDF)
     cleanDF.limit(100).foreach(
       elem => {
         val row = Row(

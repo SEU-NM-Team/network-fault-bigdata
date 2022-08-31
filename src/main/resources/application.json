@@ -16,7 +16,8 @@
     "workdata": "F:/workdata/workdata_1.txt",
     "workdata_output": "F:/output/raw",
     "workdata_csv": "F:/output/raw",
-    "source_output":"F:/output/source"
+    "source_output":"D:/output/source",
+    "fault_data_output": "D:/output/fault_data"
   },
   "dict": {
     "address": "(\\s+|县|市|区)?(.{1,5}?(县|区|市))?(.{1,6}?(乡|镇|街道办|街道|办事处|地区))?(.+)",

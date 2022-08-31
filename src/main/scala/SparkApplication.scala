@@ -1,6 +1,6 @@
 package edu.cose.seu
 
-import function.Pretreatment
+import function.FaultDataGenerator
 
 
 object SparkApplication {

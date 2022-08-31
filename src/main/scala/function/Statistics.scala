@@ -3,14 +3,16 @@ package function
 
 
 import edu.cose.seu.config.SparkConfig
-import edu.cose.seu.config.SparkConfig.spark
+import edu.cose.seu.config.SparkConfig.{field, spark}
 import edu.cose.seu.util.TimeUtil.getTime
 import edu.cose.seu.util.{CSVUtil, JDBCUtil}
 import org.apache.spark.sql.functions.col
 import org.apache.spark.sql.types.{IntegerType, LongType, StringType, StructField, StructType, TimestampType}
 import org.apache.spark.sql.{DataFrame, Row}
 
-
+/**
+ * 统计四个指标：故障数，重障数，故障地点数，重障地点数
+ */
 object Statistics {
 
   val schema: StructType = StructType(Array(
@@ -31,14 +33,14 @@ object Statistics {
   /**
    * 从数据库获取故障信息
    */
-  val fault_data: DataFrame = JDBCUtil.getTable("fault_data")
+  val fault_data: DataFrame = JDBCUtil.getTable("fault_data", field("jdbc.url"))
 
   def statistics(): DataFrame = {
     /**
      * 计算某一县区，发生某种故障的地点总数
      */
     val faultTownDF = fault_data
-      .groupBy("province", "city", "county", "fault_1", "fault_2")
+      .groupBy("province", "city", "acs_way", "fault")
       .count()
     //      .withColumnRenamed("count", "fault_town_num")
 
@@ -48,7 +50,7 @@ object Statistics {
     val againTownDF = fault_data
       .filter("num > 1")
       .withColumn("num", col("num") - 1)
-      .groupBy("province", "city", "county", "fault_1", "fault_2")
+      .groupBy("province", "city", "acs_way", "fault")
       .count()
     //      .withColumnRenamed("count", "again_town_num")
 

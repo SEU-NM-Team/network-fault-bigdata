@@ -5,6 +5,7 @@ import config.SparkConfig.field
 import util.{CSVUtil, JDBCUtil}
 
 import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.functions.col
 import org.apache.spark.sql.types.StructType
 
 object RawPretreatment {
@@ -64,11 +65,13 @@ object RawPretreatment {
      */
     targetDF = targetDF.na.drop()
 
+    targetDF = targetDF.filter(col("acs_way").rlike(field("dict.acsFilter")))
+
     /**
      * 写入CSV，JDBC
      */
     CSVUtil.write(targetDF, field("file.source_output"))
-    JDBCUtil.writeTable(targetDF, "source_data", "append", field("jdbc.url"))
+//    JDBCUtil.writeTable(targetDF, "source_data", "append", field("jdbc.url"))
 
     return targetDF
   }

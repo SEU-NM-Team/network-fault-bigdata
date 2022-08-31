@@ -1,18 +1,25 @@
 package edu.cose.seu
 package function
 
-import util.{JDBCUtil, JSONUtil}
+import util.{CSVUtil, JDBCUtil, JSONUtil}
 
 import edu.cose.seu.config.SparkConfig
+import edu.cose.seu.config.SparkConfig.field
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.expressions.Window
 import org.apache.spark.sql.functions.{col, lit, sum}
 
 object Analysis {
 
-  val statisticsDF: DataFrame = JDBCUtil.getTable("statistics")
+  val statisticsDF: DataFrame = CSVUtil.read(
+    JDBCUtil.getTable("statistics").schema,
+    field("file.statistics_output")
+  )
 
-  val faultDF: DataFrame = JDBCUtil.getTable("fault_data")
+  val faultDF: DataFrame = CSVUtil.read(
+    JDBCUtil.getTable("fault_data").schema,
+    field("file.fault_data_output")
+  )
 
   /**
    * 分析省市统计
@@ -146,12 +153,14 @@ object Analysis {
 
 
   def main(args: Array[String]): Unit = {
-    generateCitySum()
-    generateRegionSum()
-    generateFault1()
-    generateFault2()
-    generateAcsWay()
-    generateProvinceContrast()
+    //    generateCitySum()
+    //    generateRegionSum()
+    //    generateFault1()
+    //    generateFault2()
+    //    generateAcsWay()
+    //    generateProvinceContrast()
+    val statistics = CSVUtil.read(JDBCUtil.getTable("statistics").schema, field("file.statistics_output"))
+    statistics.select("acs_way").distinct().show()
   }
 
 

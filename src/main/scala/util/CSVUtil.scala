@@ -28,6 +28,10 @@ object CSVUtil {
   }
 
   def write(df: DataFrame, path: String): Unit = {
-    df.coalesce(1).write.option("header", "true").csv(path)
+    df.coalesce(1)
+      .write
+      .option("header", "true")
+      .mode("overwrite")
+      .csv(path)
   }
 }

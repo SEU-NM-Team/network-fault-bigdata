@@ -1,19 +1,21 @@
 package edu.cose.seu
-package function
+package rawdata
 
+import config.SparkConfig.{field, spark}
+import util.{CSVUtil, JDBCUtil}
 import util.TextUtil.readtxt
 
-import edu.cose.seu.config.SparkConfig.{field, spark}
-import edu.cose.seu.util.{CSVUtil, JDBCUtil}
 import org.apache.spark.sql.Row
-import org.apache.spark.sql.types.{DateType, IntegerType, StringType, StructField, StructType}
+import org.apache.spark.sql.types._
 
 import java.sql.Date
-import scala.collection.mutable.ArrayBuffer
 
-object SrcProcesser {
+/**
+ * 原始txt文件生成csv文件
+ */
+object RawInit {
 
-  def srcprocess(): Unit = {
+  def rawInit(): Unit = {
 
     /**
      * 读取workdata
@@ -63,7 +65,7 @@ object SrcProcesser {
       StructField("fault_id", StringType, nullable = true),
       StructField("province", StringType, nullable = true),
       StructField("city", StringType, nullable = true),
-      StructField("user_type", StringType, nullable = true),
+      StructField("user_id", StringType, nullable = true),
       StructField("user_number", StringType, nullable = true),
       StructField("fault_time", DateType, nullable = true),
       StructField("value1", IntegerType, nullable = true),
@@ -72,7 +74,7 @@ object SrcProcesser {
       StructField("mood", StringType, nullable = true),
       StructField("service", StringType, nullable = true),
       StructField("service_detail", StringType, nullable = true),
-      StructField("fault_1", StringType, nullable = true),
+      StructField("fault", StringType, nullable = true),
       StructField("fault_type", StringType, nullable = true),
       StructField("acs_way", StringType, nullable = true),
       StructField("detail", StringType, nullable = true)
@@ -85,11 +87,11 @@ object SrcProcesser {
 
     targetDF = targetDF.dropDuplicates("fault_id");
 
-    JDBCUtil.writeTable(targetDF, "raw_data", "append", field("jdbc.source_url"))
+    CSVUtil.write(targetDF,field("file.workdata_output"))
   }
 
   def main(args: Array[String]): Unit = {
-    srcprocess()
+    rawInit()
   }
 
 }

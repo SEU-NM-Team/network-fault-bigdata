@@ -8,10 +8,9 @@ import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructT
 
 object CSVUtil {
 
-  def read(schema:StructType,path: String): DataFrame = {
+  def read(path: String): DataFrame = {
     return SparkConfig.spark.read
       .option("header", "true")
-      .schema(schema)
       .csv(path)
   }
 

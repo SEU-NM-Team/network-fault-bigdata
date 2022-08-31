@@ -6,7 +6,6 @@ import util.{CSVUtil, JDBCUtil}
 import edu.cose.seu.config.SparkConfig
 import edu.cose.seu.config.SparkConfig.{field, spark}
 import edu.cose.seu.util.AddressSegmentationUtil.addressSegmentation
-import edu.cose.seu.util.CSVUtil.sourceSchema
 import edu.cose.seu.util.TimeUtil.getTime
 import org.apache.spark.sql.expressions.Window
 import org.apache.spark.sql.{DataFrame, Row}
@@ -21,10 +20,7 @@ object FaultDataGenerator {
   /**
    * 读取source_data
    */
-  val sourceDF: DataFrame = CSVUtil.read(
-    JDBCUtil.getTable("source_data", field("jdbc.url")).schema,
-    field("file.source_output")
-  )
+  val sourceDF: DataFrame = CSVUtil.read(field("file.source_output"))
 
   def generateFaultData(): DataFrame = {
     var targetDF = sourceDF.groupBy("province", "city", "detail", "user_id", "acs_way", "fault_type", "fault")

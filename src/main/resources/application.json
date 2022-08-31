@@ -16,9 +16,20 @@
     "workdata": "F:/workdata/workdata_1.txt",
     "workdata_output": "F:/output/raw",
     "workdata_csv": "F:/output/raw",
-    "source_output":"F:/output/source",
+    "source_output": "F:/output/source",
     "fault_data_output": "F:/output/fault_data",
-    "statistics_output": "F:/output/statistics"
+    "statistics_output": "F:/output/statistics",
+    "city_sum_output": "F:/output/plot/city_sum",
+    "address_sum_output": "F:/output/plot/address_sum",
+    "fault_output": "F:/output/plot/fault",
+    "acs_way_output": "F:/output/plot/acs_way",
+    "fault_address_contrast_output": "F:/output/plot/fault_address_contrast",
+    "again_address_contrast_output": "F:/output/plot/again_address_contrast",
+    "fault_num_contrast_output": "F:/output/plot/fault_num_contrast",
+    "again_num_contrast_output": "F:/output/plot/again_num_contrast",
+    "portrait_output": "F:/output/plot/portrait",
+    "risk_output": "F:/output/plot/risk",
+    "stream_output": "F:/output/plot/stream"
   },
   "dict": {
     "address": "(\\s+|县|市|区)?(.{1,5}?(县|区|市))?(.{1,6}?(乡|镇|街道办|街道|办事处|地区))?(.+)",

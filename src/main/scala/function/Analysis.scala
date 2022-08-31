@@ -11,107 +11,66 @@ import org.apache.spark.sql.functions.{col, lit, sum}
 
 object Analysis {
 
-  val statisticsDF: DataFrame = CSVUtil.read(
-    JDBCUtil.getTable("statistics").schema,
-    field("file.statistics_output")
-  )
+  val statisticsDF: DataFrame = CSVUtil.read(field("file.statistics_output"))
 
-  val faultDF: DataFrame = CSVUtil.read(
-    JDBCUtil.getTable("fault_data").schema,
-    field("file.fault_data_output")
-  )
+  val faultDF: DataFrame = CSVUtil.read(field("file.fault_data_output"))
 
   /**
    * 分析省市统计
    */
   def generateCitySum(): Unit = {
     val cityDF = statisticsDF.groupBy("province", "city")
-      .sum("fault_num")
+      .agg(sum("fault_num"))
       .withColumnRenamed("sum(fault_num)", "fault_sum")
       .withColumn("id",
         org.apache.spark.sql.functions.row_number().over(Window.partitionBy().orderBy(col("province"), -col("fault_sum"))))
-    cityDF.show(100)
-    JDBCUtil.writeTable(cityDF, "city_sum", "overwrite", SparkConfig.field("jdbc.plot_url"))
+    //    cityDF.show(100)
+    CSVUtil.write(cityDF, field("file.city_sum_output"))
+    //    JDBCUtil.writeTable(cityDF, "city_sum", "overwrite", SparkConfig.field("jdbc.plot_url"))
   }
 
   /**
    * 分析省市故障地点
    */
-  def generateRegionSum(): Unit = {
+  def generateAddressSum(): Unit = {
     val cityDF = statisticsDF.groupBy("province", "city")
-      .sum("fault_address_num")
+      .agg(sum("fault_address_num"))
       .withColumnRenamed("sum(fault_address_num)", "address_sum")
       .withColumn("id",
         org.apache.spark.sql.functions.row_number().over(Window.partitionBy().orderBy(col("province"), -col("address_sum"))))
-    cityDF.show(100)
-    JDBCUtil.writeTable(cityDF, "address_sum", "overwrite", SparkConfig.field("jdbc.plot_url"))
+    //    cityDF.show(100)
+    CSVUtil.write(cityDF, field("file.address_sum_output"))
+    //    JDBCUtil.writeTable(cityDF, "address_sum", "overwrite", SparkConfig.field("jdbc.plot_url"))
   }
 
   /**
-   * 分析各省一类故障
+   * 分析各省故障
    */
-  def generateFault1(): Unit = {
+  def generateFault(): Unit = {
     val faultDF1 = faultDF
-      .groupBy("province", "fault_1")
-      .sum("num")
+      .groupBy("province", "fault")
+      .agg(sum("num"))
       .withColumnRenamed("sum(num)", "sum")
       .withColumn("id",
         org.apache.spark.sql.functions.row_number().over(Window.partitionBy().orderBy(col("province"), -col("sum"))))
-    faultDF1.show(1000)
-    JDBCUtil.writeTable(faultDF1, "fault_1", "overwrite", SparkConfig.field("jdbc.plot_url"))
+    //    faultDF1.show(1000)
+    CSVUtil.write(faultDF1, field("file.fault_output"))
+    //    JDBCUtil.writeTable(faultDF1, "fault", "overwrite", SparkConfig.field("jdbc.plot_url"))
   }
 
   /**
-   * 分析省市二类故障
-   */
-  def generateFault2(): Unit = {
-    val faultDF1 = faultDF
-      .groupBy("province", "fault_2")
-      .sum("num")
-      .withColumnRenamed("sum(num)", "sum")
-      .withColumn("id",
-        org.apache.spark.sql.functions.row_number().over(Window.partitionBy().orderBy(col("province"), -col("sum"))))
-    faultDF1.show(1000)
-    JDBCUtil.writeTable(faultDF1, "fault_2", "overwrite", SparkConfig.field("jdbc.plot_url"))
-  }
-
-  /**
-   * 分析四种接入方式——宽带业务，IPTV,增值业务，未标注
+   * 分析接入方式
    */
   def generateAcsWay(): Unit = {
-    val acswayDF = faultDF
+    val targetDF = statisticsDF
       .groupBy("acs_way")
-      .sum("num")
-      .withColumnRenamed("sum(num)", "sum")
-      .orderBy(-col("sum"))
-    // acswayDF.show(1000)
-    val DF1 = acswayDF
-      .filter(col("acs_way").rlike("宽带"))
-      .agg(sum("sum"))
-      .withColumnRenamed("sum(sum)", "sum")
-      .withColumn("acs_way", lit("宽带业务"))
-    DF1.show()
-    val DF2 = acswayDF
-      .filter(col("acs_way").rlike("IPTV"))
-      .agg(sum("sum"))
-      .withColumnRenamed("sum(sum)", "sum")
-      .withColumn("acs_way", lit("IPTV"))
-    val DF3 = acswayDF
-      .filter(col("acs_way").rlike("增值"))
-      .agg(sum("sum"))
-      .withColumnRenamed("sum(sum)", "sum")
-      .withColumn("acs_way", lit("增值业务"))
-    val DF4 = acswayDF.filter("acs_way=='未标注'")
-      .agg(sum("sum"))
-      .withColumnRenamed("sum(sum)", "sum")
-      .withColumn("acs_way", lit("未标注"))
-    val targetDF = DF1
-      .unionByName(DF2)
-      .unionByName(DF3)
-      .unionByName(DF4)
+      .count()
+      .withColumnRenamed("count", "sum")
       .withColumn("id",
         org.apache.spark.sql.functions.row_number().over(Window.partitionBy().orderBy(-col("sum"))))
-    JDBCUtil.writeTable(targetDF, "acs_way_sum", "overwrite", SparkConfig.field("jdbc.plot_url"))
+      .limit(4)
+    CSVUtil.write(targetDF, field("file.acs_way_output"))
+    //    JDBCUtil.writeTable(targetDF, "acs_way_sum", "overwrite", SparkConfig.field("jdbc.plot_url"))
   }
 
   /**
@@ -120,47 +79,48 @@ object Analysis {
   def generateProvinceContrast(): Unit = {
     val DF1 = statisticsDF
       .groupBy("province")
-      .sum("fault_address_num")
+      .agg(sum("fault_address_num"))
       .withColumnRenamed("sum(fault_address_num)", "sum")
       .withColumn("id",
         org.apache.spark.sql.functions.row_number().over(Window.partitionBy().orderBy(-col("sum"))))
-    JDBCUtil.writeTable(DF1, "fault_address_contrast", "overwrite", SparkConfig.field("jdbc.plot_url"))
+    CSVUtil.write(DF1, field("file.fault_address_contrast_output"))
+    //    JDBCUtil.writeTable(DF1, "fault_address_contrast", "overwrite", SparkConfig.field("jdbc.plot_url"))
 
     val DF2 = statisticsDF
       .groupBy("province")
-      .sum("again_address_num")
+      .agg(sum("again_address_num"))
       .withColumnRenamed("sum(again_address_num)", "sum")
       .withColumn("id",
         org.apache.spark.sql.functions.row_number().over(Window.partitionBy().orderBy(-col("sum"))))
-    JDBCUtil.writeTable(DF2, "again_address_contrast", "overwrite", SparkConfig.field("jdbc.plot_url"))
+    CSVUtil.write(DF2, field("file.again_address_contrast_output"))
+    //    JDBCUtil.writeTable(DF2, "again_address_contrast", "overwrite", SparkConfig.field("jdbc.plot_url"))
 
     val DF3 = statisticsDF
       .groupBy("province")
-      .sum("fault_num")
+      .agg(sum("fault_num"))
       .withColumnRenamed("sum(fault_num)", "sum")
       .withColumn("id",
         org.apache.spark.sql.functions.row_number().over(Window.partitionBy().orderBy(-col("sum"))))
-    JDBCUtil.writeTable(DF3, "fault_num_contrast", "overwrite", SparkConfig.field("jdbc.plot_url"))
+    CSVUtil.write(DF3, field("file.fault_num_contrast_output"))
+    //    JDBCUtil.writeTable(DF3, "fault_num_contrast", "overwrite", SparkConfig.field("jdbc.plot_url"))
 
     val DF4 = statisticsDF
       .groupBy("province")
-      .sum("again_num")
+      .agg(sum("again_num"))
       .withColumnRenamed("sum(again_num)", "sum")
       .withColumn("id",
         org.apache.spark.sql.functions.row_number().over(Window.partitionBy().orderBy(-col("sum"))))
-    JDBCUtil.writeTable(DF4, "again_num_contrast", "overwrite", SparkConfig.field("jdbc.plot_url"))
+    CSVUtil.write(DF4, field("file.again_num_contrast_output"))
+    //    JDBCUtil.writeTable(DF4, "again_num_contrast", "overwrite", SparkConfig.field("jdbc.plot_url"))
   }
 
 
   def main(args: Array[String]): Unit = {
-    //    generateCitySum()
-    //    generateRegionSum()
-    //    generateFault1()
-    //    generateFault2()
-    //    generateAcsWay()
-    //    generateProvinceContrast()
-    val statistics = CSVUtil.read(JDBCUtil.getTable("statistics").schema, field("file.statistics_output"))
-    statistics.select("acs_way").distinct().show()
+    generateCitySum()
+    generateAddressSum()
+    generateFault()
+    generateAcsWay()
+    generateProvinceContrast()
   }
 
 

@@ -5,12 +5,10 @@ import config.SparkConfig.field
 import util.{CSVUtil, JDBCUtil}
 
 import org.apache.spark.sql.DataFrame
-import org.apache.spark.sql.functions.col
+import org.apache.spark.sql.functions.{col, length}
 import org.apache.spark.sql.types.StructType
 
 object RawPretreatment {
-
-  val schema: StructType = JDBCUtil.getTable("source_data", field("jdbc.url")).schema
 
   /**
    * 原始数据处理
@@ -26,7 +24,7 @@ object RawPretreatment {
     /**
      * 读取由txt生成的csv文件
      */
-    val srcDF: DataFrame = CSVUtil.read(schema, field("file.workdata_csv"))
+    val srcDF: DataFrame = CSVUtil.read(field("file.workdata_csv"))
 
     /**
      * 去除空行
@@ -47,7 +45,7 @@ object RawPretreatment {
      * 缺失值处理
      */
     targetDF = targetDF.na.fill(Map(
-      "user_number" -> "0",
+      "user_number" -> "未预留电话",
       "value1" -> 0,
       "value2" -> 0,
       "value3" -> 0,
@@ -65,13 +63,18 @@ object RawPretreatment {
      */
     targetDF = targetDF.na.drop()
 
+    /**
+     * 异常值处理
+     */
     targetDF = targetDF.filter(col("acs_way").rlike(field("dict.acsFilter")))
+      .filter(length(col("province")) < 3)
+      .filter(length(col("city")) < 11)
 
     /**
      * 写入CSV，JDBC
      */
     CSVUtil.write(targetDF, field("file.source_output"))
-//    JDBCUtil.writeTable(targetDF, "source_data", "append", field("jdbc.url"))
+    //    JDBCUtil.writeTable(targetDF, "source_data", "append", field("jdbc.url"))
 
     return targetDF
   }

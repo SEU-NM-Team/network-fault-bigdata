@@ -6,7 +6,7 @@ import util.CSVUtil
 import edu.cose.seu.config.SparkConfig.field
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.expressions.Window
-import org.apache.spark.sql.functions.col
+import org.apache.spark.sql.functions.{col, date_format}
 
 /**
  * 流式统计数据
@@ -17,6 +17,8 @@ object Stream {
 
   def streamCount(): DataFrame = {
     val targetDF = sourceDF
+      .filter(date_format(col("fault_time"), "yyyy") > 2015)
+      .withColumn("fault_time", date_format(col("fault_time"), "yyyy-MM"))
       .groupBy("province", "fault_time")
       .count()
       .withColumn("id",

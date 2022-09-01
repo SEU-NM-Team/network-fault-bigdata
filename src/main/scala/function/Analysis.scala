@@ -48,13 +48,28 @@ object Analysis {
    */
   def generateFault(): Unit = {
     val faultDF1 = faultDF
-      .groupBy("province", "fault")
+      .groupBy("fault")
       .agg(sum("num"))
       .withColumnRenamed("sum(num)", "sum")
       .withColumn("id",
-        org.apache.spark.sql.functions.row_number().over(Window.partitionBy().orderBy(col("province"), -col("sum"))))
+        org.apache.spark.sql.functions.row_number().over(Window.partitionBy().orderBy(-col("sum"))))
+      .limit(5)
     //    faultDF1.show(1000)
     CSVUtil.write(faultDF1, field("file.fault_output"))
+    //    JDBCUtil.writeTable(faultDF1, "fault", "overwrite", SparkConfig.field("jdbc.plot_url"))
+  }
+
+  /**
+   * 分析故障类型
+   */
+  def generateFaultType(): Unit = {
+    val faultDF1 = faultDF.groupBy("fault_type")
+      .agg(sum("num"))
+      .withColumnRenamed("sum(num)", "sum")
+      .withColumn("id",
+        org.apache.spark.sql.functions.row_number().over(Window.partitionBy().orderBy(-col("sum"))))
+    //    faultDF1.show(1000)
+    CSVUtil.write(faultDF1, field("file.fault_type_output"))
     //    JDBCUtil.writeTable(faultDF1, "fault", "overwrite", SparkConfig.field("jdbc.plot_url"))
   }
 

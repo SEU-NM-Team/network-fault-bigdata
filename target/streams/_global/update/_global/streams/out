@@ -1,4 +1,3 @@
-[warn] spark-core_2.12-3.2.1.jar no longer exists at C:\Users\Li\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\apache\spark\spark-core_2.12\3.2.1\spark-core_2.12-3.2.1.jar
-[debug] not up to date. inChanged = false, force = false
+[debug] not up to date. inChanged = true, force = false
 [debug] Updating ...
 [debug] Done updating 

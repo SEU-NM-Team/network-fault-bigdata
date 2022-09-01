@@ -9,25 +9,15 @@ import edu.cose.seu.function.Stream
 object SparkApplicationFunctionExecutor {
 
   def main(args: Array[String]): Unit = {
-    Statistics.statistics()
     Analysis.generateCitySum()
     Analysis.generateAddressSum()
     Analysis.generateFault()
+    Analysis.generateFaultType()
     Analysis.generateAcsWay()
     Analysis.generateProvinceContrast()
     Portrait.generatePortrait()
     Risk.generateRiskLevel()
     Stream.streamCount()
-
-    /**
-     * 写统计表
-     */
-    CSV2JDBCUtil.csv2jdbc(
-      field("file.statistics_output"),
-      "statistics",
-      "overwrite",
-      field("jdbc.url")
-    )
 
     /**
      * 写一系列绘图表
@@ -49,6 +39,13 @@ object SparkApplicationFunctionExecutor {
     CSV2JDBCUtil.csv2jdbc(
       field("file.fault_output"),
       "fault",
+      "overwrite",
+      field("jdbc.plot_url")
+    )
+
+    CSV2JDBCUtil.csv2jdbc(
+      field("file.fault_type_output"),
+      "fault_type",
       "overwrite",
       field("jdbc.plot_url")
     )

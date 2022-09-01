@@ -1,4 +1,0 @@
-[warn] scala-library-2.12.15-sources.jar no longer exists at C:\Users\Li\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala-library\2.12.15\scala-library-2.12.15-sources.jar
-[debug] not up to date. inChanged = false, force = false
-[debug] Updating ProjectRef(uri("file:/F:/Java/network-fault-bigdata/"), "root")...
-[debug] Done updating ProjectRef(uri("file:/F:/Java/network-fault-bigdata/"), "root")

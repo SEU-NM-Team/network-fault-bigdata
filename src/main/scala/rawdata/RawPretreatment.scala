@@ -11,7 +11,7 @@ import org.apache.spark.sql.types.StructType
 object RawPretreatment {
 
   /**
-   * 原始数据处理
+   * 数据预处理
    * <p>1.去除空行</p>
    * <p>2.去除特定字段为空的数据</p>
    * <p>3.去除id重复的数据</p>
@@ -69,6 +69,7 @@ object RawPretreatment {
     targetDF = targetDF.filter(col("acs_way").rlike(field("dict.acsFilter")))
       .filter(length(col("province")) < 3)
       .filter(length(col("city")) < 11)
+      .filter(length(col("fault_type"))<5)
 
     /**
      * 写入CSV，JDBC

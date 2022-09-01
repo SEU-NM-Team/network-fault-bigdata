@@ -22,6 +22,7 @@
     "city_sum_output": "F:/output/plot/city_sum",
     "address_sum_output": "F:/output/plot/address_sum",
     "fault_output": "F:/output/plot/fault",
+    "fault_type_output": "F:/output/plot/fault_type",
     "acs_way_output": "F:/output/plot/acs_way",
     "fault_address_contrast_output": "F:/output/plot/fault_address_contrast",
     "again_address_contrast_output": "F:/output/plot/again_address_contrast",
